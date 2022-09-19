@@ -24,7 +24,7 @@ pipeline {
               withDockerRegistry([credentialsId: "docker-ID", url: ""]){
                     sh 'printenv'
                     sh 'docker build -y sush24/numeric-app:""$GIT_COMMIT"" .'  
-                    sh 'docker push -y sush24/numeric-app:""$GIT_COMMIT""'
+                    sh 'docker push sush24/numeric-app:""$GIT_COMMIT""'
               }
             }
        }  
