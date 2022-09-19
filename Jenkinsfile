@@ -26,6 +26,7 @@ pipeline {
                     sh 'docker build -y sush24/numeric-app:""$GIT_COMMIT"" .'  
                     sh 'docker push -y sush24/numeric-app:""$GIT_COMMIT""'
               }
+            }
        }  
     }
 }
