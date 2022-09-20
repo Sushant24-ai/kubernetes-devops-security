@@ -27,7 +27,7 @@ pipeline {
 
       stage('SonarQube - SAST') {
              steps {
-             withSonarQubeEnv('sonar-qube') {
+             withSonarQubeEnv('SonarQube') {
                    sh "mvn sonar:sonar \
 		                  -Dsonar.projectKey=numeric-application \
 		                  -Dsonar.host.url=http://20.163.155.184:9000/"
