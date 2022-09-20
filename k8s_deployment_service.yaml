@@ -16,7 +16,7 @@ spec:
         app: devsecops
     spec:
       containers:
-      - image: siddharth67/numeric-app
+      - image: REPLACE_ME
         name: devsecops-container
 ---
 apiVersion: v1
