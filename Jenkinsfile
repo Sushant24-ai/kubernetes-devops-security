@@ -29,6 +29,7 @@ pipeline {
             steps {
              sh "mvn clean verify sonar:sonar  -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://20.163.155.184:9000 -Dsonar.login=sqp_4d1a0920c290fa96de33ca8fb404eb930cfa9a76"
         }
+      }
       
        stage('Docker Build Image and push') {
             steps {
