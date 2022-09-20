@@ -45,7 +45,7 @@ pipeline {
             steps {
               withKubeConfig([credentialsId: 'kube-config']){
                   sh "sed -i 's#REPLACE_ME#docker-registry:5000/java-app:latest#g' k8s_deployment_service.yaml"
-                  sh "kubectl apply -f k8s_deployment_service.yml"
+                  sh 'kubectl apply -f k8s_deployment_service.yaml'
               }
             }
        }  
