@@ -12,12 +12,7 @@ pipeline {
             steps {
               sh "mvn test"
             }
-            post {
-              always{
-                 junit 'target/surefire-reports/*.xml'
-                 jacoco execPattern: 'target/jacoco.exec'
-              }
-            } 
+           
        }
        stage('Mutation Tests - PIT') {
              steps {
@@ -38,11 +33,21 @@ pipeline {
         // }
       }
 
-      stage('vuluneribilities scan - Docker'){
-            steps{
-              sh "mvn dependency-check:check"
-            }
-      }
+         stage('Vulnerability Scan - Docker') {
+              steps {
+                 parallel(
+                       	"Dependency Scan": {
+        	                	sh "mvn dependency-check:check"
+		                 	},
+		                  	"Trivy Scan":{
+			                  	  sh "bash trivy-docker-image-scan.sh"
+		                	},
+		                  // 	"OPA Conftest":{
+			                //     	sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-docker-security.rego Dockerfile'
+		                	// }   	
+              	)
+              }
+         }
       
       //  stage('Docker Build Image and push') {
       //       steps {
@@ -62,5 +67,17 @@ pipeline {
       //         }
       //       }
       //  }  
+      post { 
+        always { 
+          junit 'target/surefire-reports/*.xml'
+          jacoco execPattern: 'target/jacoco.exec'
+          pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+          dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+          publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report'])
+        
+ 		  //Use sendNotifications.groovy from shared library and provide current build result as parameter 
+          //sendNotification currentBuild.result
+        }
       }
+    }
   }
