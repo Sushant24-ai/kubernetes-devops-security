@@ -48,6 +48,7 @@ pipeline {
               	)
               }
          }
+  
       
       //  stage('Docker Build Image and push') {
       //       steps {
@@ -66,18 +67,20 @@ pipeline {
       //             sh 'kubectl apply -f k8s_deployment_service.yaml'
       //         }
       //       }
-      //  }  
-    // post { 
-    //     always { 
-    //       junit 'target/surefire-reports/*.xml'
-    //       jacoco execPattern: 'target/jacoco.exec'
-    //       pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-    //       dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-    //       publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report'])
-        
- 		//   //Use sendNotifications.groovy from shared library and provide current build result as parameter 
-    //       //sendNotification currentBuild.result
-    //     }
-    //  }
+      //  } 
   }
-}
+
+    post { 
+        always { 
+          junit 'target/surefire-reports/*.xml'
+          jacoco execPattern: 'target/jacoco.exec'
+          pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+          dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+          publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report'])
+        
+ 		  //Use sendNotifications.groovy from shared library and provide current build result as parameter 
+          //sendNotification currentBuild.result
+        }
+     }
+  }
+
