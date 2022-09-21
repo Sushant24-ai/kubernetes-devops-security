@@ -50,24 +50,24 @@ pipeline {
          }
   
       
-      //  stage('Docker Build Image and push') {
-      //       steps {
-      //         withDockerRegistry([credentialsId: "docker-ID", url: ""]){
-      //               sh 'printenv'
-      //               sh 'docker build -t sush24/numeric-app:""$GIT_COMMIT"" .'  
-      //               sh 'docker push sush24/numeric-app:""$GIT_COMMIT""'
-      //         }
-      //       }
-      //  } 
+       stage('Docker Build Image and push') {
+            steps {
+              withDockerRegistry([credentialsId: "docker-ID", url: ""]){
+                    sh 'printenv'
+                    sh 'docker build -t sush24/numeric-app:""$GIT_COMMIT"" .'  
+                    sh 'docker push sush24/numeric-app:""$GIT_COMMIT""'
+              }
+            }
+       } 
     
-      //  stage('Kubernetes deployment - DEV') {
-      //       steps {
-      //         withKubeConfig([credentialsId: 'kube-config']){
-      //             sh "sed -i 's#REPLACE_ME#docker-registry:5000/java-app:latest#g' k8s_deployment_service.yaml"
-      //             sh 'kubectl apply -f k8s_deployment_service.yaml'
-      //         }
-      //       }
-      //  } 
+       stage('Kubernetes deployment - DEV') {
+            steps {
+              withKubeConfig([credentialsId: 'kube-config']){
+                  sh "sed -i 's#REPLACE_ME#docker-registry:5000/java-app:latest#g' k8s_deployment_service.yaml"
+                  sh 'kubectl apply -f k8s_deployment_service.yaml'
+              }
+            }
+       } 
   }
 
     post { 
