@@ -101,6 +101,52 @@ pipeline {
             }
        }
 
+      stage('OWASP ZAP - DAST') {
+        steps {
+           withKubeConfig([credentialsId: 'kube-config']) {
+               sh 'bash zap.sh'
+           }
+        }
+      }
+
+      stage('K8S CIS Benchmark') {
+        steps {
+          script {
+
+            parallel(
+               "Master": {
+                  sh "bash cis-master.sh"
+               },
+               "Etcd": {
+                  sh "bash cis-etcd.sh"
+               },
+               "Kubelet": {
+                  sh "bash cis-kubelet.sh"
+              }
+            )
+
+         }
+       }
+      }
+
+      stage('K8S Deployment - PROD') {
+          steps {
+             parallel(
+                "Deployment": {
+                    withKubeConfig([credentialsId: 'kube-config']) {
+                         sh "sed -i 's#REPLACE_ME#${imageName}#g' k8s_PROD-deployment_service.yaml"
+                         sh "kubectl -n prod apply -f k8s_PROD-deployment_service.yaml"
+                   }
+                },
+               "Rollout Status": {
+                    withKubeConfig([credentialsId: 'kube-config']) {
+                         sh "bash k8s-PROD-deployment-rollout-status.sh"
+                   }
+                }
+            )
+         }    
+      }
+
        stage('Integration Tests - DEV') {
            steps {
               script {
@@ -116,14 +162,6 @@ pipeline {
              }
              }
           }
-      }
-
-      stage('OWASP ZAP - DAST') {
-        steps {
-           withKubeConfig([credentialsId: 'kube-config']) {
-               sh 'bash zap.sh'
-           }
-        }
       }
   }
 
