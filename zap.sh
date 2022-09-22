@@ -23,11 +23,11 @@ echo "Exit Code : $exit_code"
 
  if [[ ${exit_code} -ne 0 ]];  then
     echo "OWASP ZAP Report has either Low/Medium/High Risk. Please check the HTML Report"
-    exit 1;
+    exit 0;
    else
     echo "OWASP ZAP did not report any Risk"
  fi;
 
 
 # Generate ConfigFile
-# docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-weekly zap-api-scan.py -t http://devsecops-demo.eastus.cloudapp.azure.com:31933/v3/api-docs -f openapi -g gen_file
+#docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-weekly zap-api-scan.py -t http://20.163.155.184:30923//v3/api-docs -f openapi -g gen_file
